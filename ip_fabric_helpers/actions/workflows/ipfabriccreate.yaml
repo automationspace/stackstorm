@@ -1,0 +1,86 @@
+---
+version: '2.0'
+dcfabric.ipfabriccreate:
+  input:
+    - fabricname
+    - switch_mgmt_ip
+    - switch_username
+    - switch_password
+    - spine_asn_block_key
+    - spine_asn_block_value
+    - leaf_asn_block_key
+    - leaf_asn_block_value
+    - loopback_port_num_key
+    - loopback_port_num_value
+    - p2p_link_range_key
+    - p2p_link_range_value
+    - loopback_ip_range_key
+    - loopback_ip_range_value
+  tasks:
+    fab_add:
+      # [105, 26]
+      action: network_inventory.fabric_add
+      input:
+        fabric: <% $.fabricname %>
+      on-success:
+        - fabtask1_spine_asn_set
+    fabtask1_spine_asn_set:
+      # [105, 128]
+      action: network_inventory.fabric_config_set
+      input:
+        fabric: <% $.fabricname %>
+        key: <% $.spine_asn_block_key %>
+        value: <% $.spine_asn_block_value %>
+      on-success:
+        - fabtask2_leaf_asn_set
+    fabtask2_leaf_asn_set:
+      # [105, 230]
+      action: network_inventory.fabric_config_set
+      input:
+        fabric: <% $.fabricname %>
+        key: <% $.leaf_asn_block_key %>
+        value: <% $.leaf_asn_block_value %>
+      on-success:
+        - fabtask3_loopback_port_num_set
+    fabtask3_loopback_port_num_set:
+      # [105, 332]
+      action: network_inventory.fabric_config_set
+      input:
+        fabric: <% $.fabricname %>
+        key: <% $.loopback_port_num_key %>
+        value: <% $.loopback_port_num_value%>
+      on-success:
+        - fabtask4_p2p_ip_range_set
+    fabtask4_p2p_ip_range_set:
+      # [105, 434]
+      action: network_inventory.fabric_config_set
+      input:
+        fabric: <% $.fabricname %>
+        key: <% $.p2p_link_range_key %>
+        value: <% $.p2p_link_range_value %>
+      on-success:
+        - fabtask5_loopback_ip_range_set
+    fabtask5_loopback_ip_range_set:
+      # [105, 536]
+      action: network_inventory.fabric_config_set
+      input:
+        fabric: <% $.fabricname %>
+        key: <%  $.loopback_ip_range_key %>
+        value: <% $.loopback_ip_range_value %>
+      on-success:
+        - switchadd
+    switchadd:
+      # [105, 638]
+      action: network_inventory.switch_add
+      input:
+        fabric: <% $.fabricname %>
+        host: <% $.switch_mgmt_ip %>
+        user: <% $.switch_username %>
+        passwd: <% $.switch_password %>
+      on-success:
+        - configure_fabric
+    configure_fabric:
+      # [105, 740]
+      action: dcfabric.configure_fabric_infra
+      input:
+        fabric: <% $.fabricname %>

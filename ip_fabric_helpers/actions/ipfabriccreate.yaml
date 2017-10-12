@@ -1,0 +1,65 @@
+description: workflow to create new ip fabric with ebgp
+enabled: true
+entry_point: workflows/ipfabriccreate.yaml
+id: 59d67a422750f206ebd54182
+name: ipfabriccreate
+notify: {}
+pack: dcfabric
+parameters:
+    fabricname:
+        required: true
+        type: string
+    leaf_asn_block_key:
+        default: leaf_asn_block
+        required: true
+        type: string
+    leaf_asn_block_value:
+        default: 65000-65534
+        required: true
+        type: string
+    loopback_ip_range_key:
+        default: loopback_ip_range
+        required: true
+        type: string
+    loopback_ip_range_value:
+        default: 172.32.254.0/24
+        required: true
+        type: string
+    loopback_port_num_key:
+        default: loopback_port_number
+        required: true
+        type: string
+    loopback_port_num_value:
+        default: '1'
+        required: true
+        type: string
+    p2p_link_range_key:
+        default: p2p_link_range
+        required: true
+        type: string
+    p2p_link_range_value:
+        default: 10.10.10.0/23
+        required: true
+        type: string
+    spine_asn_block_key:
+        default: spine_asn_block
+        required: true
+        type: string
+    spine_asn_block_value:
+        default: '64500'
+        required: true
+        type: string
+    switch_mgmt_ip:
+        required: true
+        type: string
+    switch_password:
+        default: password
+        type: string
+    switch_username:
+        default: admin
+        required: true
+        type: string
+ref: default.ipfabriccreate
+runner_type: mistral-v2
+tags: []
+uid: action:default:ipfabriccreate
